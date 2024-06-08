@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatter-deployment
+  namespace: chatter-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chatter
+  template:
+    metadata:
+      labels:
+        app: chatter
+    spec:
+      containers:
+        - name: chatter-container
+          image: 984235857022.dkr.ecr.us-east-1.amazonaws.com/cdk-hnb659fds-container-assets-984235857022-us-east-1:latest
+          ports:
+            - name: chatter-svc
+              containerPort: 8080

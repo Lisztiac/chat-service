@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: chatter
+
+server:
+  servlet:
+    context-path: /chatter
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
