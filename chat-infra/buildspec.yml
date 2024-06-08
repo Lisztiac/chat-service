@@ -5,14 +5,10 @@ phases:
     commands:
       - echo Logging into AWS ECR...
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - ANOTHER_HASH=$(echo $CODEBUILD_SOURCE_VERSION | cut -c 1-7)
-      - ANOTHER_TAG=${ANOTHER_HASH:=latest}
+      - export COMMIT_HASH="$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)"
+      - export IMAGE_TAG="${COMMIT_HASH:=latest}"
       - echo $COMMIT_HASH
       - echo $IMAGE_TAG
-      - echo $ANOTHER_HASH
-      - echo $ANOTHER_TAG
   build:
     commands:
       - echo Build started on `date`
