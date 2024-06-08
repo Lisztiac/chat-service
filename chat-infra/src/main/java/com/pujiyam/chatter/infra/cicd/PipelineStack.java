@@ -26,16 +26,6 @@ public class PipelineStack extends Stack {
     public PipelineStack(final Construct scope, final String id, final StackProps props) {
         super(scope, id, props);
 
-//        ShellStep synth = ShellStep.Builder
-//                .create("Synth")
-//                .input(CodePipelineSource.gitHub("Lisztiac/chat-service", "main"))
-//                .commands(List.of(
-//                        "cd chat-infra",
-//                        "npm install -g aws-cdk",
-//                        "cdk synth"))
-//                .primaryOutputDirectory("chat-infra/cdk.out")
-//                .build();
-
         IRepository imgRepo = Repository.fromRepositoryName(this, "ChatterRepo", "cdk-hnb659fds-container-assets-984235857022-us-east-1");
 
         BuildEnvironment buildEnv = BuildEnvironment.builder()
