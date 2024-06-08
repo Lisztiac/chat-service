@@ -1,7 +1,6 @@
 package com.pujiyam.chatter.infra;
 
 import com.pujiyam.chatter.infra.cicd.PipelineStack;
-import com.pujiyam.chatter.infra.eks.EksStack;
 import software.amazon.awscdk.App;
 import software.amazon.awscdk.Environment;
 import software.amazon.awscdk.StackProps;

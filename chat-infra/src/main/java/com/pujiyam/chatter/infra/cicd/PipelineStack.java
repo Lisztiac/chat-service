@@ -27,8 +27,10 @@ public class PipelineStack extends Stack {
     public PipelineStack(final Construct scope, final String id, final StackProps props) throws IOException {
         super(scope, id, props);
 
+        // Get reference to existing image repo for build-pipeline - using the repo created during bootstrapping for now
         IRepository imgRepo = Repository.fromRepositoryName(this, "ChatterRepo", "cdk-hnb659fds-container-assets-984235857022-us-east-1");
 
+        // Define configs for the build-pipeline
         BuildEnvironment buildEnv = BuildEnvironment.builder()
                 .buildImage(LinuxArmBuildImage.AMAZON_LINUX_2_STANDARD_3_0)
                 .privileged(true)
@@ -38,9 +40,11 @@ public class PipelineStack extends Stack {
                         "IMAGE_REPO_URI", buildVar(imgRepo.getRepositoryUri())
                 )).build();
 
+        // Output artifacts to be passed from one pipeline action to the next
         Artifact sourceOutput = new Artifact();
         Artifact buildOutput = new Artifact();
 
+        // Build-pipeline is a lower level construct, using for finer control (pull repo, build image, upload to ECR)
         Pipeline buildPipeline = Pipeline.Builder
                 .create(this, "Pipeline")
                 .restartExecutionOnUpdate(true)
@@ -50,6 +54,7 @@ public class PipelineStack extends Stack {
                 ))
                 .build();
 
+        // Defining configs for deploy-pipeline, giving same repo source as build-pipeline
         ShellStep synth = CodeBuildStep.Builder
                 .create("Synth")
                 .input(CodePipelineFileSet.fromArtifact(sourceOutput))
@@ -62,12 +67,14 @@ public class PipelineStack extends Stack {
                 .primaryOutputDirectory("chat-infra/cdk.out")
                 .build();
 
+        // Using higher level construct to simplify deployment
         CodePipeline deployPipeline = CodePipeline.Builder
                 .create(this, "ChatterPipeline")
                 .codePipeline(buildPipeline)
                 .synth(synth)
                 .build();
 
+        // Adding eks stage to provision and run our image from build-pipeline
         deployPipeline.addStage(new EksStage(this, "EksStage"));
     }
 
