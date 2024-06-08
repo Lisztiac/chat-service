@@ -51,7 +51,7 @@ public class PipelineStack extends Stack {
         Artifact buildOutput = new Artifact();
 
         Pipeline buildPipeline = Pipeline.Builder
-                .create(this, "BuildPipeline")
+                .create(this, "Pipeline")
                 .restartExecutionOnUpdate(true)
                 .stages(List.of(
                         createSourceStage("Source", sourceOutput),
@@ -73,7 +73,6 @@ public class PipelineStack extends Stack {
 
         CodePipeline codePipeline = CodePipeline.Builder
                 .create(this, "ChatterPipeline")
-                .pipelineName("DeployPipeline")
                 .codePipeline(buildPipeline)
                 .synth(synth)
                 .build();
