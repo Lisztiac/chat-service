@@ -84,8 +84,8 @@ public class PipelineStack extends Stack {
         GitHubSourceAction action = GitHubSourceAction.Builder
                 .create()
                 .actionName("GitHubAction")
-                .owner("Lisztian")
-                .repo("Lisztian/chat-service")
+                .owner("Lisztiac")
+                .repo("chat-service")
                 .branch("main")
                 .oauthToken(SecretValue.secretsManager("github-token"))
                 .output(output)
