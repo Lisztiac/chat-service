@@ -57,7 +57,7 @@ public class PipelineStack extends Stack {
                 .create("Synth")
                 .input(CodePipelineSource.gitHub("Lisztiac/chat-service", "main"))
                 .buildEnvironment(buildEnv)
-                .commands(List.of("./build.sh"))
+                .commands(List.of("chat-infra/build.sh"))
                 .primaryOutputDirectory("chat-infra/cdk.out")
                 .build();
 
