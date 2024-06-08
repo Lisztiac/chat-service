@@ -61,13 +61,13 @@ public class PipelineStack extends Stack {
                 .primaryOutputDirectory("chat-infra/cdk.out")
                 .build();
 
-        CodePipeline codePipeline = CodePipeline.Builder
+        CodePipeline deployPipeline = CodePipeline.Builder
                 .create(this, "ChatterPipeline")
                 .codePipeline(buildPipeline)
                 .synth(synth)
                 .build();
 
-//        pipeline.addStage(new EksStage(this, "eks-stage"));
+        deployPipeline.addStage(new EksStage(this, "EksStage"));
     }
 
     private StageProps createSourceStage(String stageName, Artifact output) {
