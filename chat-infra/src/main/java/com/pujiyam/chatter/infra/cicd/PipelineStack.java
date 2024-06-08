@@ -85,7 +85,7 @@ public class PipelineStack extends Stack {
                 .create()
                 .actionName("GitHubAction")
                 .owner("Lisztian")
-                .repo("chat-service")
+                .repo("Lisztian/chat-service")
                 .branch("main")
                 .oauthToken(SecretValue.secretsManager("github-token"))
                 .output(output)
