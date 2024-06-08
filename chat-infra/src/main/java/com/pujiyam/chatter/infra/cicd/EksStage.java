@@ -10,8 +10,8 @@ import java.io.IOException;
 
 public class EksStage extends Stage {
 
-    public EksStage(final Construct scope, final String id) {
-        super(scope, id);
+    public EksStage(final Construct scope, final String id) throws IOException {
+        this(scope, id, null);
     }
 
     public EksStage(final Construct scope, final String id, final StageProps props) throws IOException {

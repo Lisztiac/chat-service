@@ -14,16 +14,17 @@ import software.amazon.awscdk.services.ecr.IRepository;
 import software.amazon.awscdk.services.ecr.Repository;
 import software.constructs.Construct;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class PipelineStack extends Stack {
 
-    public PipelineStack(final Construct scope, final String id) {
+    public PipelineStack(final Construct scope, final String id) throws IOException {
         this(scope, id, null);
     }
 
-    public PipelineStack(final Construct scope, final String id, final StackProps props) {
+    public PipelineStack(final Construct scope, final String id, final StackProps props) throws IOException {
         super(scope, id, props);
 
         IRepository imgRepo = Repository.fromRepositoryName(this, "ChatterRepo", "cdk-hnb659fds-container-assets-984235857022-us-east-1");
