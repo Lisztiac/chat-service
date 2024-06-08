@@ -12,7 +12,7 @@ phases:
       - echo Build started on `date`
       - echo Building Docker image...
       - cd chat-app && ls -l
-      - docker build -t $IMAGE_REPO_URI:latest -f Dockerfile .
+      - docker build -t $IMAGE_REPO_URI:latest -f ./Dockerfile .
       - docker tag $IMAGE_REPO_URI:latest $IMAGE_REPO_URI:$IMAGE_TAG
   post_build:
     commands:
