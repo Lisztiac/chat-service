@@ -85,7 +85,7 @@ public class PipelineStack extends Stack {
 
     private StageProps createImageBuildStage(String stageName, Artifact input, Artifact output, IRepository imgRepo) {
         BuildEnvironment buildEnv = BuildEnvironment.builder()
-                .buildImage(LinuxArmBuildImage.AMAZON_LINUX_2_STANDARD_3_0)
+                .buildImage(LinuxBuildImage.AMAZON_LINUX_2_5)
                 .privileged(true)
                 .environmentVariables(Map.of(
                         "AWS_REGION", buildEnvVar(Stack.of(this).getRegion()),
