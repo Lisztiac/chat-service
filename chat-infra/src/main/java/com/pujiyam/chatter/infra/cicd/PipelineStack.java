@@ -30,16 +30,6 @@ public class PipelineStack extends Stack {
         // Get reference to existing image repo for build-pipeline - using the repo created during bootstrapping for now
         IRepository imgRepo = Repository.fromRepositoryName(this, "ChatterRepo", "cdk-hnb659fds-container-assets-984235857022-us-east-1");
 
-        // Define configs for the build-pipeline
-        BuildEnvironment buildEnv = BuildEnvironment.builder()
-                .buildImage(LinuxArmBuildImage.AMAZON_LINUX_2_STANDARD_3_0)
-                .privileged(true)
-                .environmentVariables(Map.of(
-                        "AWS_REGION", buildVar(Stack.of(this).getRegion()),
-                        "AWS_ACCOUNT_ID", buildVar(Stack.of(this).getAccount()),
-                        "IMAGE_REPO_URI", buildVar(imgRepo.getRepositoryUri())
-                )).build();
-
         // Output artifacts to be passed from one pipeline action to the next
         Artifact sourceOutput = new Artifact();
         Artifact buildOutput = new Artifact();
@@ -47,27 +37,25 @@ public class PipelineStack extends Stack {
         // Build-pipeline is a lower level construct, using for finer control (pull repo, build image, upload to ECR)
         Pipeline buildPipeline = Pipeline.Builder
                 .create(this, "Pipeline")
+                .pipelineName("Chatter Pipeline")
                 .restartExecutionOnUpdate(true)
                 .stages(List.of(
                         createSourceStage("Source", sourceOutput),
                         createImageBuildStage("ImageBuild", sourceOutput, buildOutput, imgRepo)
-                ))
-                .build();
+                )).build();
 
         // Defining configs for deploy-pipeline, giving same repo source as build-pipeline
         ShellStep synth = CodeBuildStep.Builder
                 .create("Synth")
                 .input(CodePipelineFileSet.fromArtifact(sourceOutput))
-                .buildEnvironment(buildEnv)
                 .commands(List.of(
                         "cd chat-infra",
                         "npm install -g aws-cdk",
                         "cdk synth"
-                ))
-                .primaryOutputDirectory("chat-infra/cdk.out")
+                )).primaryOutputDirectory("chat-infra/cdk.out")
                 .build();
 
-        // Using higher level construct to simplify deployment
+        // Using higher level construct to simplify deployment, passing build-pipeline to use
         CodePipeline deployPipeline = CodePipeline.Builder
                 .create(this, "ChatterPipeline")
                 .codePipeline(buildPipeline)
@@ -81,7 +69,7 @@ public class PipelineStack extends Stack {
     private StageProps createSourceStage(String stageName, Artifact output) {
         GitHubSourceAction action = GitHubSourceAction.Builder
                 .create()
-                .actionName("GitHubAction")
+                .actionName("Connect GitHub")
                 .owner("Lisztiac")
                 .repo("chat-service")
                 .branch("main")
@@ -100,11 +88,10 @@ public class PipelineStack extends Stack {
                 .buildImage(LinuxArmBuildImage.AMAZON_LINUX_2_STANDARD_3_0)
                 .privileged(true)
                 .environmentVariables(Map.of(
-                        "AWS_REGION", buildVar(Stack.of(this).getRegion()),
-                        "AWS_ACCOUNT_ID", buildVar(Stack.of(this).getAccount()),
-                        "IMAGE_REPO_URI", buildVar(imgRepo.getRepositoryUri())
-                ))
-                .build();
+                        "AWS_REGION", buildEnvVar(Stack.of(this).getRegion()),
+                        "AWS_ACCOUNT_ID", buildEnvVar(Stack.of(this).getAccount()),
+                        "IMAGE_REPO_URI", buildEnvVar(imgRepo.getRepositoryUri())
+                )).build();
 
         PipelineProject project = PipelineProject.Builder
                 .create(this, "ChatterProject")
@@ -116,7 +103,7 @@ public class PipelineStack extends Stack {
 
         CodeBuildAction action = CodeBuildAction.Builder
                 .create()
-                .actionName("ImageBuildAction")
+                .actionName("Build Image")
                 .project(project)
                 .input(input)
                 .outputs(List.of(output))
@@ -128,7 +115,7 @@ public class PipelineStack extends Stack {
                 .build();
     }
 
-    private BuildEnvironmentVariable buildVar(Object value) {
+    private BuildEnvironmentVariable buildEnvVar(Object value) {
         return BuildEnvironmentVariable.builder()
                 .value(value)
                 .build();

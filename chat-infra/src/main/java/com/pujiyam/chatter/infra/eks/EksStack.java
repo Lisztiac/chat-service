@@ -1,6 +1,7 @@
 package com.pujiyam.chatter.infra.eks;
 
 import com.pujiyam.chatter.infra.util.YamlUtil;
+import software.amazon.awscdk.cdk.lambdalayer.kubectl.v29.KubectlV29Layer;
 import software.amazon.awscdk.services.ec2.InstanceClass;
 import software.amazon.awscdk.services.ec2.InstanceSize;
 import software.amazon.awscdk.services.ec2.InstanceType;
@@ -34,7 +35,9 @@ public class EksStack extends Stack {
 
         Cluster cluster = Cluster.Builder
                 .create(this, "ChatterCluster")
+                // kubectl layer version has to be within 1 minor version of cluster layer
                 .version(KubernetesVersion.V1_29)
+                .kubectlLayer(new KubectlV29Layer(this, "KubectlLayer"))
                 .vpc(vpc)
                 .albController(alb)
                 // T2.micro is free tier, but has max pods limit of 4.
