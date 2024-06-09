@@ -9,6 +9,6 @@ public class TestAPI {
 
     @GetMapping("/test")
     public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Hello!");
+        return ResponseEntity.ok("Hello World!");
     }
 }
