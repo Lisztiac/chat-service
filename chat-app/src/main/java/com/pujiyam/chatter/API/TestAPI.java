@@ -1,4 +1,4 @@
-package com.pujiyam.chatter.APIs;
+package com.pujiyam.chatter.API;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +9,6 @@ public class TestAPI {
 
     @GetMapping("/test")
     public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Hello Hello!");
+        return ResponseEntity.ok("Hello!");
     }
 }
