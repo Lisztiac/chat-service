@@ -37,7 +37,7 @@ public class PipelineStack extends Stack {
         // Build-pipeline is a lower level construct, using for finer control (pull repo, build image, upload to ECR)
         Pipeline buildPipeline = Pipeline.Builder
                 .create(this, "Pipeline")
-                .pipelineName("Chatter Pipeline")
+                .pipelineName("Chatter_Pipeline")
                 .restartExecutionOnUpdate(true)
                 .stages(List.of(
                         createSourceStage("Source", sourceOutput),
@@ -69,7 +69,7 @@ public class PipelineStack extends Stack {
     private StageProps createSourceStage(String stageName, Artifact output) {
         GitHubSourceAction action = GitHubSourceAction.Builder
                 .create()
-                .actionName("Connect GitHub")
+                .actionName("Connect_GitHub")
                 .owner("Lisztiac")
                 .repo("chat-service")
                 .branch("main")
@@ -103,7 +103,7 @@ public class PipelineStack extends Stack {
 
         CodeBuildAction action = CodeBuildAction.Builder
                 .create()
-                .actionName("Build Image")
+                .actionName("Build_Image")
                 .project(project)
                 .input(input)
                 .outputs(List.of(output))

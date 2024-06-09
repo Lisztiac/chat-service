@@ -35,6 +35,7 @@ public class EksStack extends Stack {
 
         Cluster cluster = Cluster.Builder
                 .create(this, "ChatterCluster")
+                .clusterName("Chatter_Cluster")
                 // kubectl layer version has to be within 1 minor version of cluster layer
                 .version(KubernetesVersion.V1_29)
                 .kubectlLayer(new KubectlV29Layer(this, "KubectlLayer"))
