@@ -9,14 +9,14 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building Docker image...
-      - docker build -t $IMAGE_REPO_URI:latest ./chat-app
+      - docker buildx build --platform linux/arm64,linux/amd64 -t $IMAGE_REPO_URI:latest ./chat-app
       - docker tag $IMAGE_REPO_URI:latest $IMAGE_REPO_URI:$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing Docker image...
-      - docker push $IMAGE_REPO_URI:latest
-      - docker push $IMAGE_REPO_URI:$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - docker push --platform linux/arm64,linux/amd64 $IMAGE_REPO_URI:latest
+      - docker push --platform linux/arm64,linux/amd64 $IMAGE_REPO_URI:$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - echo Writing image definitions file...
       - printf \'[{"name":"chatter","imageUri":"%s"}]\' $IMAGE_REPO_URI:latest > imagedefinitions.json
 
