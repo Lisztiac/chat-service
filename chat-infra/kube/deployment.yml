@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: chatter-container
-          image: 984235857022.dkr.ecr.us-east-1.amazonaws.com/cdk-hnb659fds-container-assets-984235857022-us-east-1:latest
+          image: __CONTAINER_IMAGE__
           ports:
             - name: chatter-svc
               containerPort: 8080
