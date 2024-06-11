@@ -19,7 +19,7 @@ phases:
       - docker push $IMAGE_REPO_URI:latest
       - docker push $IMAGE_REPO_URI:$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - echo Updating deployment image...
-      - sed -i 's/__CONTAINER_IMAGE__/'"$IMAGE_REPO_URI:$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)"'/g' ./chat-infra/kube/deployment.yml
+      - sed -i 's@__CONTAINER_IMAGE__@'"$IMAGE_REPO_URI:$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)"'@' ./chat-infra/kube/deployment.yml
       - cat ./chat-infra/kube/deployment.yml
       - echo Writing image definitions file...
       - printf \'[{"name":"chatter","imageUri":"%s"}]\' $IMAGE_REPO_URI:latest > imagedefinitions.json
