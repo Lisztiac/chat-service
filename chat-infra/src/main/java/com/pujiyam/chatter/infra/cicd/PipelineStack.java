@@ -63,7 +63,11 @@ public class PipelineStack extends Stack {
                 .build();
 
         // Adding eks stage to provision and run our image from build-pipeline
-        deployPipeline.addStage(new EksStage(this, "EksStage"));
+        deployPipeline.addStage(new EksStage(this, "EksStage"))
+                .addPost(ShellStep.Builder
+                        .create("UpdateKubeImage")
+                        .commands(List.of("./chat-infra/updateKubeImage.sh"))
+                        .build());
     }
 
     private StageProps createSourceStage(String stageName, Artifact output) {
