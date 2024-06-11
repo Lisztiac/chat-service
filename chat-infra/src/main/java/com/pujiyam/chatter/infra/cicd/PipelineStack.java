@@ -66,6 +66,7 @@ public class PipelineStack extends Stack {
         deployPipeline.addStage(new EksStage(this, "EksStage"))
                 .addPost(ShellStep.Builder
                         .create("UpdateKubeImage")
+                        .input(CodePipelineFileSet.fromArtifact(sourceOutput))
                         .commands(List.of("./chat-infra/updateKubeImage.sh"))
                         .build());
     }
